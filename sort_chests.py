@@ -2,21 +2,6 @@ import xml.etree.ElementTree as ET
 import argparse
 
 
-
-parser = argparse.ArgumentParser(description='Merge all the item stacks in your chests per map if possible.')
-parser.add_argument('savefile', metavar='src', type=str, nargs=1,help='The location of your savefile.')
-parser.add_argument('targetfile', metavar='dst', type=str, nargs=1,help='The location you want your new savefile to be saved to.')
-parser.add_argument('-chestname',metavar='cn',default='Kiste',nargs='?',help="Whatever chests are named in your savefile like 'Chest' or 'Kiste', depending on your language setting. Default is 'Kiste'.")
-
-
-args = parser.parse_args()
-if args.savefile and args.targetfile:
-    df = get_chest_inventory(args.savefile[0],args.chestname)
-    df.style.apply(chest_color, axis=1).apply(text_color,axis=1).to_html(args.targetfile[0])
-
-
-
-
 def sort_inventory(source,target,chest_name):
     tree = ET.parse(source)
     root = tree.getroot()
@@ -75,3 +60,13 @@ def sort_inventory(source,target,chest_name):
         fixed.write(xmlstring + data[len('<SaveGame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'):])
     print('done')
 
+
+parser = argparse.ArgumentParser(description='Export the contensts of your Stardew Valley chests into an html table.')
+parser.add_argument('savefile', metavar='src', type=str, nargs=1,help='The location of your savefile.')
+parser.add_argument('targetfile', metavar='dst', type=str, nargs=1,help='The location you want your table to be saved to.')
+parser.add_argument('-chestname',metavar='cn',default='Kiste',nargs='?',help="Whatever chests are named in your savefile like 'Chest' or 'Kiste', depending on your language setting. Default is 'Kiste'.")
+
+
+args = parser.parse_args()
+if args.savefile and args.targetfile:
+    sort_inventory(args.savefile[0],args.targetfile[0],args.chestname)
